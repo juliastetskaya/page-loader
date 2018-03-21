@@ -13,4 +13,4 @@
 
 <h2>Use</h2>
 
-<p> $ page-loader --output [directory] [link] </p>
+<p> $ page-loader --output [directory] <link> </p>
