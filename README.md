@@ -10,7 +10,6 @@
 
 <p> $ npm install page-loader-by-julia </p>
 
-<br>
 
 <h2>Use</h2>
 
