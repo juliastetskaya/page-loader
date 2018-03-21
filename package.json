@@ -1,0 +1,48 @@
+{
+  "name": "page-loader-by-juliast",
+  "version": "0.0.1",
+  "description": "Utility for downloading recipients from the network",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "babel-node": "babel-node",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint"
+  },
+  "bin": {
+    "page-loader": "dist/bin/page-loader.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliastetskaya/project-lvl3-s194.git"
+  },
+  "author": "Julia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juliastetskaya/project-lvl3-s194/issues"
+  },
+  "homepage": "https://github.com/juliastetskaya/project-lvl3-s194#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.19.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jest": "^21.15.0",
+    "jest": "^22.4.2",
+    "jest-cli": "^23.0.0-alpha.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "commander": "^2.15.0",
+    "mz": "^2.7.0",
+    "nock": "^9.2.3"
+  }
+}
