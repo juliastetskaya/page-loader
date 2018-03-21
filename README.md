@@ -8,7 +8,7 @@
 
 <h2>Setup</h2>
 
-<p> $ npm install page-loader-by-julia </p>
+<p> $ npm install page-loader-by-juliast -g </p>
 
 
 <h2>Use</h2>
