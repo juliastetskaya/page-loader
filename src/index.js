@@ -48,8 +48,7 @@ const downloadPages = (mainLink, links, folderName, pathToFolder) => {
 
     return axios.get(fullLink, { responseType: 'arraybuffer' })
       .then(response => fs.writeFile(fullPath, response.data))
-      .catch(error =>
-        ((error.response.status === 404) ? Promise.resolve() : Promise.reject(error)));
+      .catch(() => Promise.resolve());
   });
 };
 
