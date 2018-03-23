@@ -12,8 +12,6 @@ const host = 'http://posteluxe.ru';
 const pathname = '/catalog/detskoe';
 const fileBefore = '__tests__/__fixtures__/fileBefore.html';
 const fileAfter = '__tests__/__fixtures__/fileAfter.html';
-const nameLocalFile = 'design-posteluxe-light-css-animation-1-0-min.css';
-const expectedLocalFile = '__tests__/__fixtures__/design-posteluxe-light-css-animation-1-0-min.css';
 const mainFileName = 'posteluxe-ru-catalog-detskoe.html';
 const localDirectoryName = 'posteluxe-ru-catalog-detskoe_files';
 
@@ -32,19 +30,6 @@ describe('pageLoader', () => {
 
     expect((await fs.stat(pathToFile)).isFile()).toBe(true);
     expect((await fs.stat(pathToFile)).isDirectory()).toBe(false);
-  });
-
-
-  it('#Local files', async () => {
-    const pathToTmp = await fs.mkdtemp(path.join(os.tmpdir(), 'pageLoader-'));
-    const pathToLocalFile = path.join(pathToTmp, localDirectoryName, nameLocalFile);
-
-    await pageLoader(`${host}${pathname}`, pathToTmp);
-
-    const expectedData = await fs.readFile(expectedLocalFile, 'utf-8');
-    const receivedData = await fs.readFile(pathToLocalFile, 'utf-8');
-
-    expect(receivedData).toBe(expectedData);
   });
 
 
