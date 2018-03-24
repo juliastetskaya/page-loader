@@ -6,10 +6,8 @@ import cheerio from 'cheerio';
 import _ from 'lodash';
 import debug from 'debug';
 
-const ERROR = debug('page-loader: ERROR');
-const debugMainFunc = debug('page-loader: debugMainFunc');
-const debugLoadPages = debug('page-loader: debugLoadPages');
-const log = console.log.bind(console);
+const success = debug('page-loader: success');
+const warn = debug('page-loader: warn');
 
 const parseTags = {
   img: 'src',
@@ -55,24 +53,21 @@ const getFullLink = (link, mainLink) => {
   return (localHost === null) ? url.format({ protocol, hostname: host, pathname: link }) : link;
 };
 
-const downloadPages = (mainLink, localLinks, pathToResourcesDir) => {
-  const promises = _.union(localLinks).map((link) => {
+const loadResources = (mainLink, localLinks, pathToResourcesDir) => {
+  const uniqueLinks = _.union(localLinks);
+  const promises = uniqueLinks.map((link) => {
+    const localFileName = getLocalFileName(link);
     const fullLink = getFullLink(link, mainLink);
-    const fullPath = path.resolve(pathToResourcesDir, getLocalFileName(link));
+    const fullPath = path.resolve(pathToResourcesDir, localFileName);
 
     return axios.get(fullLink, { responseType: 'arraybuffer' })
-      .then((response) => {
-        debugLoadPages('The local file was downloaded!');
-        return fs.writeFile(fullPath, response.data);
-      })
-      .catch((error) => {
-        ERROR(`The file is not download. Error: ${error.message}`);
-        return Promise.resolve();
-      });
+      .then(response => fs.writeFile(fullPath, response.data))
+      .then(() => success(`The local file '${localFileName}' was downloaded!`))
+      .catch(error => warn(`The file '${localFileName}' is not download. Error: ${error.message}`));
   });
   return Promise.all(promises)
-    .then(() => log('All local files were downloaded!\n'))
-    .catch(error => ERROR(error.message));
+    .then(() => success('All local files were downloaded!\n'))
+    .catch(error => warn(error.message));
 };
 
 const replaceLinks = (data, localLinks, resourcesDir) => localLinks.reduce((acc, link) =>
@@ -89,26 +84,26 @@ export default (mainLink, pathToTmp = path.resolve()) => {
 
   return axios.get(mainLink)
     .then((response) => {
-      debugMainFunc('Data from the server was received!\n');
+      success('Data from the server was received!\n');
       ({ data } = response);
       return data;
     })
     .then(dataResponse => fs.writeFile(pathToMainFile, dataResponse))
-    .then(() => log(`The page was downloaded as '${mainFileName}'\n`))
+    .then(() => success(`The page was downloaded as '${mainFileName}'\n`))
     .then(() => {
       localLinks = getLocalLinks(data, mainLink);
-      debugMainFunc('Local references were collected!\n');
+      success('Local references were collected:\n');
       const newData = replaceLinks(data, localLinks, resourcesDir);
       return fs.writeFile(pathToMainFile, newData);
     })
     .then(() => {
-      debugMainFunc('All local references were replaced!\n');
+      success('All local references were replaced!\n');
       return fs.mkdir(pathToResourcesDir);
     })
     .then(() => {
-      debugMainFunc(`Directory for resorces was created as '${resourcesDir}'!\n`);
-      return downloadPages(mainLink, localLinks, pathToResourcesDir);
+      success(`Directory for resorces was created as '${resourcesDir}'!\n`);
+      return loadResources(mainLink, localLinks, pathToResourcesDir);
     })
-    .then(() => log('The application was completed successfully!\n'))
-    .catch(error => ERROR(error.message));
+    .then(() => success('The application was completed successfully!\n'))
+    .catch(error => warn(error.message));
 };
