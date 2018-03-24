@@ -92,7 +92,7 @@ export default (mainLink, pathToTmp = path.resolve()) => {
     .then(() => success(`The page was downloaded as '${mainFileName}'\n`))
     .then(() => {
       localLinks = getLocalLinks(data, mainLink);
-      success('Local references were collected:\n');
+      success('Local references were collected!\n');
       const newData = replaceLinks(data, localLinks, resourcesDir);
       return fs.writeFile(pathToMainFile, newData);
     })
