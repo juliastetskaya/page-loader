@@ -18,8 +18,11 @@ test:
 coverage:
 	npm test -- --coverage
 
-debug:
+start-debug:
 	DEBUG=page-loader:* npm run babel-node -- src/bin/page-loader.js http://posteluxe.ru/catalog/detskoe
 
-debug-test:
+test-debug:
 	DEBUG=page-loader:* npm test
+
+total-debug:
+	DEBUG=* npm run babel-node -- src/bin/page-loader.js http://posteluxe.ru/catalog/detskoe

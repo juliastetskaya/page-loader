@@ -4,7 +4,12 @@ import fs from 'mz/fs';
 import path from 'path';
 import cheerio from 'cheerio';
 import _ from 'lodash';
+import debug from 'debug';
 
+const ERROR = debug('page-loader: ERROR');
+const debugMainFunc = debug('page-loader: debugMainFunc');
+const debugLoadPages = debug('page-loader: debugLoadPages');
+const log = console.log.bind(console);
 
 const parseTags = {
   img: 'src',
@@ -57,19 +62,18 @@ const downloadPages = (mainLink, localLinks, pathToResourcesDir) => {
 
     return axios.get(fullLink, { responseType: 'arraybuffer' })
       .then((response) => {
-        console.log('The local file was downloaded!');
+        debugLoadPages('The local file was downloaded!');
         return fs.writeFile(fullPath, response.data);
       })
       .catch((error) => {
-        console.log(`The file is not downloaded. Error: ${error.message}`);
+        ERROR(`The file is not download. Error: ${error.message}`);
         return Promise.resolve();
       });
   });
   return Promise.all(promises)
-    .then(() => console.log('All local files were downloaded!\n'))
-    .catch(error => console.log(error.message));
+    .then(() => log('All local files were downloaded!\n'))
+    .catch(error => ERROR(error.message));
 };
-
 
 const replaceLinks = (data, localLinks, resourcesDir) => localLinks.reduce((acc, link) =>
   acc.replace(link, path.join(resourcesDir, getLocalFileName(link))), data);
@@ -85,26 +89,26 @@ export default (mainLink, pathToTmp = path.resolve()) => {
 
   return axios.get(mainLink)
     .then((response) => {
-      console.log('Data from the server is received!\n');
+      debugMainFunc('Data from the server was received!\n');
       ({ data } = response);
       return data;
     })
     .then(dataResponse => fs.writeFile(pathToMainFile, dataResponse))
-    .then(() => console.log(`The page was downloaded as '${mainFileName}'\n`))
+    .then(() => log(`The page was downloaded as '${mainFileName}'\n`))
     .then(() => {
       localLinks = getLocalLinks(data, mainLink);
-      console.log('Local references were collected!\n');
+      debugMainFunc('Local references were collected!\n');
       const newData = replaceLinks(data, localLinks, resourcesDir);
       return fs.writeFile(pathToMainFile, newData);
     })
     .then(() => {
-      console.log('All local references were replaced!\n');
+      debugMainFunc('All local references were replaced!\n');
       return fs.mkdir(pathToResourcesDir);
     })
     .then(() => {
-      console.log(`Directory for resorces was created as '${resourcesDir}'!\n`);
+      debugMainFunc(`Directory for resorces was created as '${resourcesDir}'!\n`);
       return downloadPages(mainLink, localLinks, pathToResourcesDir);
     })
-    .then(() => console.log('The application has completed successfully!\n'))
-    .catch(error => console.log(error.message));
+    .then(() => log('The application was completed successfully!\n'))
+    .catch(error => ERROR(error.message));
 };

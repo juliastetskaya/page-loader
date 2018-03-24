@@ -1,6 +1,6 @@
 {
   "name": "page-loader-by-juliast",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Utility for downloading recipients from the network",
   "main": "dist/index.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "debug": "^3.1.0",
     "lodash": "^4.17.5",
     "mz": "^2.7.0",
-    "nock": "^9.2.3"
+    "nock": "^9.2.3",
+    "supports-color": "^5.3.0"
   }
 }
