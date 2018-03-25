@@ -5,6 +5,7 @@ import path from 'path';
 import cheerio from 'cheerio';
 import _ from 'lodash';
 import debug from 'debug';
+import Listr from 'listr';
 
 const success = debug('page-loader: success');
 const warn = debug('page-loader: warn');
@@ -57,16 +58,23 @@ const loadResources = (mainLink, localLinks, pathToResourcesDir) => {
   const uniqueLinks = _.union(localLinks);
   const promises = uniqueLinks.map((link) => {
     const localFileName = getLocalFileName(link);
-    const fullLink = getFullLink(link, mainLink);
     const fullPath = path.resolve(pathToResourcesDir, localFileName);
+    const fullLink = getFullLink(link, mainLink);
 
-    return axios.get(fullLink, { responseType: 'arraybuffer' })
-      .then(response => fs.writeFile(fullPath, response.data))
-      .then(() => success(`The local file '${localFileName}' was downloaded!`))
-      .catch(error => warn(`The file '${localFileName}' is not download. Error: ${error.message}`));
+    const list = new Listr([
+      {
+        title: `${fullLink}`,
+        task: () =>
+          axios.get(fullLink, { responseType: 'arraybuffer' })
+            .then(response => fs.writeFile(fullPath, response.data))
+            .then(() => success(`The resourse '${fullLink}' was downloaded!`))
+            .catch(error => warn(`The resourse '${localFileName}' is not download. Error: ${error.message}`)),
+      },
+    ]);
+    return list.run();
   });
   return Promise.all(promises)
-    .then(() => success('All local files were downloaded!\n'))
+    .then(() => success(`All local resourses saved in directory '${pathToResourcesDir}'!\n`))
     .catch(error => warn(error));
 };
 
@@ -100,7 +108,7 @@ export default (mainLink, pathToTmp = path.resolve()) => {
       return fs.writeFile(pathToMainFile, newData);
     })
     .then(() => {
-      success('All local references were replaced!\n');
+      success(`All local references were replaced in file ${mainFileName}!\n`);
       return fs.mkdir(pathToResourcesDir);
     })
     .then(() => {

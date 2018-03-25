@@ -1,6 +1,6 @@
 {
   "name": "page-loader-by-juliast",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Utility for downloading recipients from the network",
   "main": "dist/index.js",
   "scripts": {
@@ -44,6 +44,7 @@
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.15.0",
     "debug": "^3.1.0",
+    "listr": "^0.13.0",
     "lodash": "^4.17.5",
     "mz": "^2.7.0",
     "nock": "^9.2.3",
