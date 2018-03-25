@@ -68,17 +68,6 @@ describe('pageLoader', () => {
     expect(mainDataBefore).toBe(mainDataAfter);
   });
 
-  it('#Error EEXIST', async () => {
-    nock(host).get(pathname).reply(200);
-    const pathToTmp = '/home/juliast/Документы/posteluxe-ru-catalog-detskoe_files';
-
-    try {
-      await pageLoader(`${host}${pathname}`, pathToTmp);
-    } catch (err) {
-      expect(err.code).toEqual('EEXIST');
-    }
-  });
-
 
   it('#Error 404', async () => {
     nock(host).get('/badpage').reply(404);
