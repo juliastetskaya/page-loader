@@ -67,7 +67,7 @@ const loadResources = (mainLink, localLinks, pathToResourcesDir) => {
   });
   return Promise.all(promises)
     .then(() => success('All local files were downloaded!\n'))
-    .catch(error => warn(error.message));
+    .catch(error => warn(error));
 };
 
 const replaceLinks = (data, localLinks, resourcesDir) => localLinks.reduce((acc, link) =>
@@ -84,13 +84,16 @@ export default (mainLink, pathToTmp = path.resolve()) => {
 
   return axios.get(mainLink)
     .then((response) => {
-      success('Data from the server was received!\n');
+      success(`Connection established! Status: ${response.status}\n`);
       ({ data } = response);
       return data;
     })
-    .then(dataResponse => fs.writeFile(pathToMainFile, dataResponse))
-    .then(() => success(`The page was downloaded as '${mainFileName}'\n`))
+    .then((dataResponse) => {
+      success('Data from the server was received!\n');
+      fs.writeFile(pathToMainFile, dataResponse);
+    })
     .then(() => {
+      success(`The page was downloaded as '${mainFileName}'\n`);
       localLinks = getLocalLinks(data, mainLink);
       success('Local references were collected!\n');
       const newData = replaceLinks(data, localLinks, resourcesDir);
@@ -105,5 +108,8 @@ export default (mainLink, pathToTmp = path.resolve()) => {
       return loadResources(mainLink, localLinks, pathToResourcesDir);
     })
     .then(() => success('The application was completed successfully!\n'))
-    .catch(error => warn(error.message));
+    .catch((error) => {
+      warn(error.message);
+      throw error;
+    });
 };

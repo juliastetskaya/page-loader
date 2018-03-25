@@ -67,4 +67,41 @@ describe('pageLoader', () => {
     expect((await fs.stat(pathToFile)).isDirectory()).toBe(false);
     expect(mainDataBefore).toBe(mainDataAfter);
   });
+
+
+  it('#Error EEXIST', async () => {
+    nock(host)
+      .get(pathname)
+      .reply(200);
+    const pathToTmp = '/home/juliast/Документы/posteluxe-ru-catalog-detskoe_files';
+
+    try {
+      await pageLoader(`${host}${pathname}`, pathToTmp);
+    } catch (err) {
+      expect(err.code).toEqual('EEXIST');
+    }
+  });
+
+
+  it('#Error 404', async () => {
+    nock(host).get('/badpage').reply(404);
+    const pathToTmp = await fs.mkdtemp(path.join(os.tmpdir(), 'pageLoader-'));
+
+    try {
+      await pageLoader(`${host}/badpage`, pathToTmp);
+    } catch (err) {
+      expect(err.message).toEqual('Request failed with status code 404');
+    }
+  });
+
+
+  it('#Error path', async () => {
+    nock(host).get(pathname).reply(200);
+
+    try {
+      await pageLoader(`${host}${pathname}`, '/home/juliast/Документы/posteluxe');
+    } catch (err) {
+      expect(err.code).toEqual('ENOENT');
+    }
+  });
 });
