@@ -90,7 +90,7 @@ export default (mainLink, pathToTmp = path.resolve()) => {
     })
     .then((dataResponse) => {
       success('Data from the server was received!\n');
-      fs.writeFile(pathToMainFile, dataResponse);
+      return fs.writeFile(pathToMainFile, dataResponse);
     })
     .then(() => {
       success(`The page was downloaded as '${mainFileName}'\n`);

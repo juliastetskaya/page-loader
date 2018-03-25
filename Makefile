@@ -4,7 +4,7 @@ install:
 	npm install
 
 start:
-	npm run babel-node -- src/bin/page-loader.js --output /var1/gid http://posteluxe.ru/catalog/detskoe
+	npm run babel-node -- src/bin/page-loader.js http://posteluxe.ru/catalog/detskoe
 
 publish:
 	npm publish
@@ -19,7 +19,7 @@ coverage:
 	npm test -- --coverage
 
 start-debug:
-	DEBUG=page-loader:* npm run babel-node -- src/bin/page-loader.js http://posteluxe.ru/catalog/detskoe
+	DEBUG=page-loader:* npm run babel-node -- src/bin/page-loader.js --output /path/path/ http://posteluxe.ru/catalog/detskoe
 
 test-debug:
 	DEBUG=page-loader:* npm test

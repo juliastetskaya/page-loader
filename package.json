@@ -1,6 +1,6 @@
 {
   "name": "page-loader-by-juliast",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Utility for downloading recipients from the network",
   "main": "dist/index.js",
   "scripts": {
