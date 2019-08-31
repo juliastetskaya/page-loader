@@ -1,4 +1,4 @@
-<h1>page-loader</h1>
+# Page-loader
 
 [![Build Status](https://travis-ci.org/juliastetskaya/project-lvl3-s194.svg?branch=master)](https://travis-ci.org/juliastetskaya/project-lvl3-s194)
 
