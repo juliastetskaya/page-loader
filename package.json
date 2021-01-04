@@ -40,7 +40,7 @@
     "jest-cli": "^23.0.0-alpha.0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.15.0",
     "debug": "^3.1.0",
